@@ -40,6 +40,8 @@ const CALLBACK_URL = process.env.CALLBACK_URL; // your backend's own callback ro
 const ACCOUNTS = {
   apex: process.env.HASHBACK_ACCOUNT_ID,
   billy: process.env.HASHBACK_ACCOUNT_ID_BILLY,
+  one: process.env.HASHBACK_ACCOUNT_ID_ONE,
+
 };
 const DEFAULT_ACCOUNT = 'apex';
 
