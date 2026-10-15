@@ -4,9 +4,9 @@
 // only strictly required for the web deployment (CORS + key exposure).
 //
 // Supports multiple tills (HashBack accounts) behind ONE proxy.
-// The app sends  "account": "apex" | "billy"  and the server maps that
-// to the real HashBack account ID. If "account" is omitted, "apex" is used,
-// so existing apps keep working unchanged.
+// The app sends  "account": "apex" | "billy" | "one" | "tala"  and the
+// server maps that to the real HashBack account ID. If "account" is
+// omitted, "apex" is used, so existing apps keep working unchanged.
 
 const express = require('express');
 const cors = require('cors');
@@ -35,13 +35,15 @@ const CALLBACK_URL = process.env.CALLBACK_URL; // your backend's own callback ro
 
 // ── Accounts (tills) ──
 // Key = name the app sends in "account". Value = HashBack account ID (from env).
-//   apex  -> HP502244 (till 5295968)  [default]
-//   billy -> HP386957 (till 1813149)
+//   apex  -> HP502244 (till 5295968)  [default]   env: HASHBACK_ACCOUNT_ID
+//   billy -> HP386957 (till 1813149)              env: HASHBACK_ACCOUNT_ID_BILLY
+//   one   -> HP063686 (till 1791451)              env: HASHBACK_ACCOUNT_ID_ONE
+//   tala  -> HP736445 (till 6756025)              env: HASHBACK_ACCOUNT_ID_TALA
 const ACCOUNTS = {
   apex: process.env.HASHBACK_ACCOUNT_ID,
   billy: process.env.HASHBACK_ACCOUNT_ID_BILLY,
   one: process.env.HASHBACK_ACCOUNT_ID_ONE,
-
+  tala: process.env.HASHBACK_ACCOUNT_ID_TALA,
 };
 const DEFAULT_ACCOUNT = 'apex';
 
@@ -141,8 +143,8 @@ app.post('/api/status', async (req, res) => {
 // If you use callback_url-based confirmation instead of/alongside polling,
 // point HASHBACK's callback_url env var at this route (must be a public
 // HTTPS URL — HashBack can't reach localhost).
-// Both tills share this one callback. Use the reference prefix
-// (e.g. NYOTA-... vs BILLY-...) to tell which till a payment belongs to.
+// All tills share this one callback. Use the reference prefix
+// (NYOTA-, BILLY-, ONE-, TALA-) to tell which till a payment belongs to.
 app.post('/api/hashpay-callback', (req, res) => {
   console.log('HashBack callback received:', req.body);
   // TODO: verify signature if HashBack provides one, then update your DB
